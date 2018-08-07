@@ -1,0 +1,82 @@
+---
+title: ''
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r}
+setwd("~/Development/pr_maria_trends")
+```
+
+
+```{r}
+require(ggplot2)
+library(readr)
+require(reshape2)
+require(RColorBrewer)
+```
+
+## Airlines
+
+```{r}
+# The palette with grey:
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+col_names <- c('week', 'popularity')
+```
+
+```{r}
+americanairlines <- read_csv("~/Development/pr_maria_trends/pr_searches/americanairlines.csv")
+colnames(americanairlines) <- col_names
+delta <- read_csv("~/Development/pr_maria_trends/pr_searches/delta.csv")
+colnames(delta) <- col_names
+jetblue <- read_csv("~/Development/pr_maria_trends/pr_searches/jetblue.csv")
+colnames(jetblue) <- col_names
+skyscanner <- read_csv("~/Development/pr_maria_trends/pr_searches/skyscanner.csv")
+colnames(skyscanner) <- col_names
+
+airlines <- data.frame(week = americanairlines$week, americanairlines = americanairlines$popularity,
+                       delta = delta$popularity, jetblue = jetblue$popularity)
+airlines <- melt(airlines, id.vars = c("week"))
+colnames(airlines) <- c('week', 'keyword', 'popularity')
+```
+
+```{r}
+ggplot(airlines, aes(x =week, y = popularity, color = keyword)) +
+  geom_line() +
+  geom_vline(xintercept = as.numeric(as.Date('2017-09-20')), linetype=3, color = '#009E73') +
+  scale_x_date(date_breaks = '1 month', date_labels = '%b %Y') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Popularity of searches for several airlines") +
+  scale_colour_manual(values = cbPalette)
+```
+
+```{r}
+ggplot(skyscanner, aes(x =week, y = popularity)) +
+  geom_line(color = '#56B4E9') +
+  geom_vline(xintercept = as.numeric(as.Date('2017-09-20')), linetype=3, color = '#009E73') +
+  scale_x_date(date_breaks = '1 month', date_labels = '%b %Y') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Popularity of searches for 'skyscanner'") +
+  scale_colour_manual(values = cbPalette)
+```
+
+### Carrier services
+```{r}
+usps <- read_csv("~/Development/pr_maria_trends/pr_searches/usps.csv")
+colnames(usps) <- col_names
+ups <- read_csv("~/Development/pr_maria_trends/pr_searches/ups.csv")
+colnames(ups) <- col_names
+fedex <- read_csv("~/Development/pr_maria_trends/pr_searches/fedex.csv")
+colnames(fedex) <- col_names
+
+carrier <- data.frame(week = usps$week, usps = usps$popularity,
+                       ups = ups$popularity, fedex = fedex$popularity)
+carrier <- melt(carrier, id.vars = c("week"))
+colnames(carrier) <- c('week', 'keyword', 'popularity')
+```
+
+```{r}
+
+```
+
